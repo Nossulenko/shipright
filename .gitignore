@@ -34,3 +34,6 @@ test-results/
 !.vscode/extensions.json
 .claude/settings.local.json
 *.log
+
+# harness folders that share a name with a build-output pattern above
+!.agents/skills/build/

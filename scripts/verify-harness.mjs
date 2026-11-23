@@ -10,6 +10,7 @@
  *
  * Usage: node scripts/verify-harness.mjs [--quiet]
  */
+import { spawnSync } from "node:child_process";
 import { existsSync, lstatSync, readFileSync, readdirSync, readlinkSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -205,7 +206,20 @@ function checkGherkin() {
   passed.push(`gherkin: ${features.length} feature files`);
 }
 
+// ── tracking ──────────────────────────────────────────────────────────────
+// A harness file that .gitignore swallows works locally and vanishes in CI and for
+// everyone who clones. (A generic `build/` pattern once hid the /build skill.)
+function checkTracked() {
+  const dirs = [".agents", ".claude", ".codex", ".github", ".githooks", "scripts", "docs", "specs", "examples"];
+  const r = spawnSync("git", ["ls-files", "--others", "--ignored", "--exclude-standard", "--directory", ...dirs], { cwd: ROOT, encoding: "utf8" });
+  if (r.status !== 0) return; // not a git checkout (e.g. a downloaded zip): nothing to check
+  const ignored = r.stdout.split("\n").filter(Boolean);
+  for (const f of ignored) fail("tracking", `${f} is git-ignored — add a "!${f}" exception to .gitignore`);
+  if (!ignored.length) passed.push("tracking: no harness files ignored by git");
+}
+
 const skills = checkSkills();
+checkTracked();
 const roles = checkRoles();
 checkContract(skills, roles);
 checkLinks();
