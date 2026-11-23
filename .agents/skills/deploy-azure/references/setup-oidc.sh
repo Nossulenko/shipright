@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ShipRight — let GitHub Actions deploy to Azure WITHOUT a client secret.
+# Shipright — let GitHub Actions deploy to Azure WITHOUT a client secret.
 #
 # Creates (skipping anything that already exists):
 #   1. a user-assigned managed identity     id-<NAME>-github   (in resource group RG)

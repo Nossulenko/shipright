@@ -1,4 +1,4 @@
-# ShipRight — deploy to Amazon ECS Express Mode on every push to main.
+# Shipright — deploy to Amazon ECS Express Mode on every push to main.
 #
 # Copy to .github/workflows/deploy-aws.yml. No secrets needed: authentication uses an IAM
 # role assumed through GitHub OIDC (short-lived credentials). Set these GitHub repository

@@ -141,7 +141,7 @@ The `nginx-unprivileged` image already runs as a non-root user. Build with `dock
 
 ## Cloud fit
 
-| Cloud | Container path (ShipRight default) | Static hosting alternative |
+| Cloud | Container path (Shipright default) | Static hosting alternative |
 | --- | --- | --- |
 | Google Cloud | Cloud Run | Firebase Hosting |
 | Azure | Container Apps | Static Web Apps (uses a deployment token — see `/deploy-azure`) |

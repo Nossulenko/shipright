@@ -1,16 +1,16 @@
 ---
 name: new-feature
-description: Guided spec session that takes raw input (notes, a transcript, an email, a Slack dump, or a one-line idea) through stages 00→03 — capture, PRD, optional grill, Gherkin scenarios, Claude Design prompt — with a checkpoint after each stage. Use when the user wants to start a new feature or product idea, or says "I have an idea", "new feature", "here are my notes". Resumable on an existing spec folder.
+description: Guided spec session that takes raw input (notes, a transcript, an email, a Slack dump, or a one-line idea) through stages 00→03 — capture, PRD, optional grill, user stories, Gherkin scenarios, Claude Design prompt — with a checkpoint after each stage. Use when the user wants to start a new feature or product idea, or says "I have an idea", "new feature", "here are my notes". Resumable on an existing spec folder.
 argument-hint: "[raw text | path to notes | NNN to resume]"
 ---
 
 # /new-feature — Raw idea → ready-to-design spec, one checkpoint at a time
 
-> **Role:** product-manager → business-analyst → ux-designer · **Input:** raw text, a file path, or an existing spec number · **Output:** `specs/NNN-slug/00-input.md` … `03-design-prompt.md` · **Next:** Claude Design, then `/import-design` or `/tech-plan`
+> **Role:** product-manager → business-analyst (stories, scenarios) → ux-designer · **Input:** raw text, a file path, or an existing spec number · **Output:** `specs/NNN-slug/00-input.md` … `03-design-prompt.md` · **Next:** Claude Design, then `/import-design` or `/tech-plan`
 
 ## What this does
 
-You bring something messy — meeting notes, a voice-memo transcript, a Slack thread, or just one sentence. This skill turns it into a spec folder in four stages: save the raw input, write the PRD, write Gherkin scenarios, and write a prompt for Claude Design. After every stage it stops and asks you to check the result, so nothing gets built on a wrong assumption.
+You bring something messy — meeting notes, a voice-memo transcript, a Slack thread, or just one sentence. This skill turns it into a spec folder in five stages: save the raw input, write the PRD, cut it into user stories, write Gherkin scenarios, and write a prompt for Claude Design. After every stage it stops and asks you to check the result, so nothing gets built on a wrong assumption.
 
 ## Before you start
 
@@ -29,8 +29,9 @@ You bring something messy — meeting notes, a voice-memo transcript, a Slack th
    | --- | --- |
    | `00-input.md` | Step 1 |
    | `01-prd.md` | Step 2 |
-   | `02-scenarios/*.feature` | Step 4 |
-   | `03-design-prompt.md` | Step 5 |
+   | `02-stories.md` | Step 4 |
+   | `02-scenarios/*.feature` | Step 5 |
+   | `03-design-prompt.md` | Step 6 |
    | none | everything is done → tell the human and suggest `/next` |
 
 3. **New?** Propose a kebab-case slug from the input (2–4 words, e.g. `team-lunch-poll`) and confirm: *"I'll create `specs/004-team-lunch-poll/`. OK?"* Then create the folder.
@@ -63,24 +64,30 @@ Follow `.agents/skills/prd/SKILL.md` from its Step 2 onward (the folder and inpu
 
 ### Step 3 — Offer a grill (recommended)
 
-Ask: *"Before we turn this into scenarios, want me to grill the PRD? It takes ~5 minutes and catches the assumptions that cause rework. (Recommended: yes, gentle mode for your first time.)"*
+Ask: *"Before we cut this into stories, want me to grill the PRD? It takes ~5 minutes and catches the assumptions that cause rework. (Recommended: yes, gentle mode for your first time.)"*
 
 - **Yes** → follow `.agents/skills/grill/SKILL.md` with target `prd`. If the grill produced ❌ verdicts, update the PRD with the human's OK before moving on.
 - **No** → append a skip record `## Skipped — <YYYY-MM-DD> — target: 01-prd.md` to `grill-log.md` (create it from `.agents/skills/grill/references/grill-log-template.md` if needed) and continue.
 
-### Step 4 — Write the scenarios (stage 02)
+### Step 4 — Write the user stories (stage 02)
 
-Follow `.agents/skills/scenarios/SKILL.md` from its Step 2 onward.
+Follow `.agents/skills/stories/SKILL.md` from its Step 1 onward (skip the optional tracker export unless the human asks).
 
-> **Checkpoint 02:** Show the coverage matrix (FR → scenario tags) and the list of `.feature` files. Point out any uncovered requirement. Ask for *"approve"* or changes.
+> **Checkpoint 02a:** Show the story map, the walking skeleton and the build order. Point out any split you made and any uncovered requirement. Ask for *"approve"* or changes.
 
-### Step 5 — Write the Claude Design prompt (stage 03)
+### Step 5 — Write the scenarios (stage 02)
+
+Follow `.agents/skills/scenarios/SKILL.md` from its Step 2 onward — it starts from the stories' acceptance criteria and keeps their tags.
+
+> **Checkpoint 02b:** Show the coverage matrix (FR → scenario tags) and the list of `.feature` files. Point out any uncovered requirement. Ask for *"approve"* or changes.
+
+### Step 6 — Write the Claude Design prompt (stage 03)
 
 Follow `.agents/skills/design-prompt/SKILL.md` from its Step 2 onward.
 
-> **Checkpoint 03:** Show the screen → scenario table and the design library used. Explain the hand-off (Step 6).
+> **Checkpoint 03:** Show the screen → scenario table and the design library used. Explain the hand-off (Step 7).
 
-### Step 6 — Hand off
+### Step 7 — Hand off
 
 The spec is ready for design. Tell the human the exact next moves:
 
@@ -96,14 +103,15 @@ Backend-only feature with no UI? Skip design and go straight to `/tech-plan NNN`
 - [ ] `00-input.md` is verbatim
 - [ ] `01-prd.md` approved by the human, open questions answered or consciously parked
 - [ ] Grill run, or skip recorded in `grill-log.md`
-- [ ] Every Must/Should FR has at least one scenario
+- [ ] `02-stories.md` approved: walking skeleton and build order agreed
+- [ ] Every Must/Should FR has at least one story and at least one scenario
 - [ ] `03-design-prompt.md` contains the OUTPUT FORMAT block and every scenario tag
 
 ## Tell the human
 
 ```
 ✅ Spec ready: specs/NNN-slug/
-   00-input.md · 01-prd.md (KEY: <KEY>, <n> FRs) · 02-scenarios/ (<n> scenarios) · 03-design-prompt.md
+   00-input.md · 01-prd.md (KEY: <KEY>, <n> FRs) · 02-stories.md (<n> stories) · 02-scenarios/ (<n> scenarios) · 03-design-prompt.md
 
 Next: paste 03-design-prompt.md into Claude Design → export into 04-design/ → /import-design NNN
 ```

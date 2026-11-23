@@ -1,6 +1,6 @@
-# Contributing to ShipRight
+# Contributing to Shipright
 
-This file covers two things: how **your product** is built inside ShipRight (branches, commits, PRs), and how to **extend the harness** (adding skills, roles and stack profiles).
+This file covers two things: how **your product** is built inside Shipright (branches, commits, PRs), and how to **extend the harness** (adding skills, roles and stack profiles).
 
 ---
 

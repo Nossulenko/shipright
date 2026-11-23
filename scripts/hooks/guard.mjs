@@ -169,7 +169,7 @@ function format(result) {
     reason = `${reason} (Codex hooks cannot pause for confirmation: review the command and run it yourself if you agree.)`;
   }
   if (runtime === "copilot") return { permissionDecision: decision, permissionDecisionReason: reason };
-  return { hookSpecificOutput: { hookEventName: "PreToolUse", permissionDecision: decision, permissionDecisionReason: `ShipRight guard: ${reason}` } };
+  return { hookSpecificOutput: { hookEventName: "PreToolUse", permissionDecision: decision, permissionDecisionReason: `Shipright guard: ${reason}` } };
 }
 
 let raw = "";

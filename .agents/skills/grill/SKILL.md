@@ -1,7 +1,7 @@
 ---
 name: grill
 description: Interactive grilling session that stress-tests a decision until it holds — walks the decision tree one question at a time, each with a recommended answer, and gives every decision a verdict (defended / accepted risk / revise). Targets a PRD, tech plan, ADR, feature files, PR, dependency or cloud choice, or a free-text decision. Use when the user says "grill me", "grill this", "poke holes", "challenge this", "is this a good idea", or before locking a PRD, tech plan, data model, new dependency or cloud choice. Logs to grill-log.md.
-argument-hint: "[prd | tech-plan | scenarios | path | \"decision text\"] [gentle|standard|brutal]"
+argument-hint: "[prd | stories | tech-plan | scenarios | path | \"decision text\"] [gentle|standard|brutal]"
 ---
 
 # /grill — Stress-test a decision until it holds 🔥
@@ -19,6 +19,7 @@ Parse the arguments:
 | Target argument | Resolves to |
 | --- | --- |
 | `prd` | `01-prd.md` of the current spec folder |
+| `stories` | `02-stories.md` |
 | `scenarios` | `02-scenarios/*.feature` |
 | `design` | `03-design-prompt.md` (and `04-design/` if present) |
 | `tech-plan` | `05-tech-plan.md` |
@@ -107,7 +108,7 @@ The session header **must** name the target file exactly like this — `/next` a
 ## Session 2 — 2026-11-23 — target: 05-tech-plan.md (standard)
 ```
 
-Use the spec file name (`01-prd.md`, `02-scenarios`, `03-design-prompt.md`, `05-tech-plan.md`), a repo-relative path for files outside the spec folder, or `target: decision` for free-text decisions. For targets outside a spec folder (e.g. an ADR or a dependency choice), append to the grill log of the related spec, or ask where to log it.
+Use the spec file name (`01-prd.md`, `02-stories.md`, `02-scenarios`, `03-design-prompt.md`, `05-tech-plan.md`), a repo-relative path for files outside the spec folder, or `target: decision` for free-text decisions. For targets outside a spec folder (e.g. an ADR or a dependency choice), append to the grill log of the related spec, or ask where to log it.
 
 ## Gate — before moving on
 

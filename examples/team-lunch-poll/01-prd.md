@@ -47,6 +47,8 @@ Every working day the Platform team (~9 people) decides where to eat in a Slack 
 
 ## 6. User stories
 
+High-level needs. Cut into 10 delivery stories in [`02-stories.md`](02-stories.md).
+
 - **US-1** — As Priya, I want to start a poll with a few places and a closing time so that the team decides by a fixed moment. → FR-1, FR-9
 - **US-2** — As Sam, I want to see today's poll and vote in a couple of taps so that I can take part between calls. → FR-2, FR-3, FR-4
 - **US-3** — As Lena, I want my vote to be private so that I can say what I prefer without being the visible veto. → NFR-4

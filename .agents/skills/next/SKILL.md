@@ -10,7 +10,7 @@ argument-hint: "[optional: spec folder or NNN]"
 
 ## What this does
 
-Looks at what exists in the repo and tells the human, in plain words, where each feature stands in the ShipRight pipeline and the **one** command to run next. It never changes files.
+Looks at what exists in the repo and tells the human, in plain words, where each feature stands in the Shipright pipeline and the **one** command to run next. It never changes files.
 
 ## Before you start
 
@@ -50,6 +50,7 @@ For each folder `specs/NNN-slug/` (sorted by NNN), check which files exist:
 | 00    | `00-input.md` exists                                                      |
 | 01    | `01-prd.md` exists                                                        |
 | PRD grilled | `grill-log.md` has a session whose target is `01-prd.md`            |
+| 02 stories | `02-stories.md` exists                                              |
 | 02    | `02-scenarios/` has at least one `.feature` file                          |
 | 03    | `03-design-prompt.md` exists                                              |
 | 04    | `04-design/` contains anything besides a README/.gitkeep                  |
@@ -75,7 +76,8 @@ Choose the earliest incomplete step for the feature the human is working on (cur
 | No specs yet                                     | `/new-feature` (paste your idea)                 |
 | 00 only                                          | `/prd specs/NNN-slug`                            |
 | 01, not grilled                                  | `/grill specs/NNN-slug/01-prd.md`                |
-| PRD grilled, no scenarios                        | `/scenarios specs/NNN-slug`                      |
+| PRD grilled, no stories                          | `/stories specs/NNN-slug`                        |
+| Stories, no scenarios                            | `/scenarios specs/NNN-slug`                      |
 | 02, no design prompt (feature has UI)            | `/design-prompt specs/NNN-slug`                  |
 | 03, no export                                    | "Paste `03-design-prompt.md` into Claude Design, export, drop the files in `04-design/`, then `/import-design specs/NNN-slug`" |
 | No app scaffolded and stage ≥ 04                 | `/scaffold`                                      |

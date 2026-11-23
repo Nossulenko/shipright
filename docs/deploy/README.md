@@ -26,7 +26,7 @@ If a runbook already exists, the deploy skills treat the next run as a **redeplo
 | Static frontend option | Firebase Hosting | Static Web Apps | Amplify Hosting |
 | Runbook | `gcp.md` | `azure.md` | `aws.md` |
 
-> AWS App Runner stopped accepting new customers on 30 April 2026. ShipRight uses ECS Express Mode, which AWS recommends instead.
+> AWS App Runner stopped accepting new customers on 30 April 2026. Shipright uses ECS Express Mode, which AWS recommends instead.
 
 ## Rules every deploy follows
 

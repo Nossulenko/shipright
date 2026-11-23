@@ -18,7 +18,7 @@ The design → code handoff is where vibe-coded products usually fall apart: the
 
 ## Decision
 
-When the Project Profile does not name a design library, ShipRight uses **shadcn/ui on Tailwind CSS with lucide-react icons**. `/design-prompt` tells Claude Design to use shadcn component names and theme tokens, and `/import-design` installs exactly those components with `npx shadcn@latest add`. Any other library named in the Project Profile overrides this everywhere.
+When the Project Profile does not name a design library, Shipright uses **shadcn/ui on Tailwind CSS with lucide-react icons**. `/design-prompt` tells Claude Design to use shadcn component names and theme tokens, and `/import-design` installs exactly those components with `npx shadcn@latest add`. Any other library named in the Project Profile overrides this everywhere.
 
 ## Consequences
 

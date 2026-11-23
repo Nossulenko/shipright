@@ -6,7 +6,7 @@ argument-hint: "[raw text | path | NNN]"
 
 # /prd — Raw input → PRD
 
-> **Role:** product-manager · **Input:** raw text, a file, or `specs/NNN-slug/00-input.md` · **Output:** `specs/NNN-slug/01-prd.md` · **Next:** `/grill prd`, then `/scenarios`
+> **Role:** product-manager · **Input:** raw text, a file, or `specs/NNN-slug/00-input.md` · **Output:** `specs/NNN-slug/01-prd.md` · **Next:** `/grill prd`, then `/stories`
 
 ## What this does
 
@@ -90,7 +90,7 @@ Present: summary line, KEY, Must-haves, non-goals, the top 3 assumptions most li
    KEY: <KEY> · <n> Must · <n> Should · <n> Could · <n> NFRs · <n> open questions
 
 Next: /grill prd  (recommended — 5 minutes, catches rework early)
-  or: /scenarios NNN
+  or: /stories NNN   (cuts the PRD into user stories, then /scenarios)
 ```
 
 Teaching mode: **What I did** (turned your notes into numbered requirements) · **Why** (numbers let us prove later that every requirement has a test) · **What to check** (do the non-goals match what you really want to leave out? are the assumptions true?).

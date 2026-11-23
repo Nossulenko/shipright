@@ -1,4 +1,4 @@
-# Adopting ShipRight in an existing repository
+# Adopting Shipright in an existing repository
 
 > **For agents:** this is a playbook, not a copy script. Read it fully, inspect the target repo, propose a plan, and get the human's approval **before writing anything**.
 > **For humans:** you can follow it by hand as a checklist.
@@ -22,9 +22,9 @@ Find out, and write down:
 | Existing agent files | `AGENTS.md`, `CLAUDE.md`, `.claude/`, `.codex/`, `.github/copilot-instructions.md`, `.cursor/` |
 | Branch and commit conventions | recent `git log`, `CONTRIBUTING.md` |
 
-## Step 2 — Map ShipRight onto it
+## Step 2 — Map Shipright onto it
 
-| ShipRight part | Bring it? | Adapt how |
+| Shipright part | Bring it? | Adapt how |
 | -------------- | --------- | --------- |
 | `AGENTS.md` contract | Always | Fill the Project Profile with the repo's **real** stack. Merge, don't overwrite, any existing `AGENTS.md`/`CLAUDE.md` content. |
 | `CLAUDE.md` (`@AGENTS.md`) | Always | If a `CLAUDE.md` exists, add `@AGENTS.md` at its top and move its rules into `AGENTS.md`. |

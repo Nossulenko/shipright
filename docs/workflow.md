@@ -1,4 +1,4 @@
-# The ShipRight workflow
+# The Shipright workflow
 
 This page walks one feature from a messy idea to a running URL. Every stage produces one file you can read, so you always know where you are. If you get lost, type `/next`.
 
@@ -6,7 +6,8 @@ This page walks one feature from a messy idea to a running URL. Every stage prod
 flowchart LR
     A[💡 Raw input<br/><code>00-input.md</code>] --> B[📄 PRD<br/><code>01-prd.md</code>]
     B --> G1{{🔥 Grill}}
-    G1 --> C[🥒 Gherkin<br/><code>02-scenarios/*.feature</code>]
+    G1 --> S[🧩 User stories<br/><code>02-stories.md</code>]
+    S --> C[🥒 Gherkin<br/><code>02-scenarios/*.feature</code>]
     C --> D[🎨 Claude Design prompt<br/><code>03-design-prompt.md</code>]
     D --> E[🖼️ Design export<br/><code>04-design/</code>]
     E --> F[🧭 Tech plan<br/><code>05-tech-plan.md</code>]
@@ -21,9 +22,9 @@ flowchart LR
 
 ## 1. Capture — `/new-feature`
 
-Paste anything: meeting notes, a Slack thread, a voice-memo transcript, one sentence. ShipRight saves it **verbatim** in `specs/NNN-slug/00-input.md`. Nothing is lost, and every later decision can be traced back to what was actually said.
+Paste anything: meeting notes, a Slack thread, a voice-memo transcript, one sentence. Shipright saves it **verbatim** in `specs/NNN-slug/00-input.md`. Nothing is lost, and every later decision can be traced back to what was actually said.
 
-`/new-feature` then carries you through stages 1–4 with a checkpoint after each. You can stop at any checkpoint and resume later.
+`/new-feature` then carries you through the PRD, stories, scenarios and design prompt with a checkpoint after each. You can stop at any checkpoint and resume later.
 
 ## 2. PRD — `/prd`
 
@@ -43,22 +44,42 @@ The **griller** role tries to break your decisions before reality does: *Who exa
 
 Everything lands in `grill-log.md`. Big, hard-to-reverse outcomes become ADRs in `docs/decisions/`.
 
-## 4. Gherkin — `/scenarios`
+## 4. User stories — `/stories`
 
-The **business-analyst** role turns each requirement into concrete examples in Gherkin, a plain-English format that is *also* an executable test:
+The **business-analyst** role cuts the PRD into user stories, each one small enough to build in a few days and **worth shipping on its own**:
 
-```gherkin
-@LUNCH-03 @FR-2 @happy
-Scenario: A member votes for a restaurant
-  Given an open poll "Friday lunch" with options "Pho" and "Tacos"
-  When Sam votes for "Tacos"
-  Then "Tacos" shows 1 vote
-  And Sam cannot vote again in this poll
+```text
+US-2.1 — Vote once                                   M · Must · Sam · FR-3
+As Sam, a team member, I want to vote for a place in a couple of taps,
+so that I take part even when I'm between calls.
+  @LUNCH-08  Given an open poll, when Sam votes for "Thai Garden", then the poll shows 1 vote for it.
+  @LUNCH-10  Given Sam voted in one tab, when Sam votes again in a second tab, then it still counts once.
 ```
 
-Every scenario carries a **scenario tag** (`@LUNCH-03`) and a **requirement tag** (`@FR-2`). Those tags follow the work into the design, the tests, the commits and the PR — that is how you prove every requirement was built.
+- **Vertical slices, never layers.** "Build the API" helps nobody on its own; "vote once" does.
+- **A story map** puts the user's activities in a row (*get in → start a poll → vote → get the result*) and the stories underneath. The first row is the **walking skeleton**: the smallest version that works end to end. You build and demo that first.
+- **INVEST** checks every card: Independent, Negotiable, Valuable, Estimable, Small, Testable.
+- **Splitting patterns** (workflow steps, business rules, happy vs. edge path, CRUD, defer performance…) cut big stories without losing value. Split stories keep their parent's number: `US-2` → `US-2.1`, `US-2.2`.
+- **Acceptance criteria are pre-tagged.** Each one already carries the scenario tag it will become, so nothing is written twice.
 
-## 5. Claude Design prompt — `/design-prompt`
+Optionally, `/stories` pushes the cards to GitHub Issues (or exports a CSV for Jira or Azure DevOps), after you say yes.
+
+## 5. Gherkin — `/scenarios`
+
+The **business-analyst** role turns each story's acceptance criteria into concrete examples in Gherkin, a plain-English format that is *also* an executable test:
+
+```gherkin
+@LUNCH-08 @US-2.1 @FR-3 @happy
+Scenario: A member casts a vote
+  Given Sam is signed in as a member of the "Platform" team
+  When Sam votes for "Thai Garden"
+  Then Sam sees their vote recorded for "Thai Garden"
+  And the poll shows 1 vote for "Thai Garden"
+```
+
+Every scenario carries a **scenario tag** (`@LUNCH-08`), its **story tag** (`@US-2.1`) and a **requirement tag** (`@FR-3`). Those tags follow the work into the design, the tests, the commits and the PR — that is how you prove every requirement was built.
+
+## 6. Claude Design prompt — `/design-prompt`
 
 The **ux-designer** role turns the scenarios into a copy-paste prompt for [Claude Design](https://claude.com/design). The prompt always includes:
 
@@ -69,15 +90,15 @@ The **ux-designer** role turns the scenarios into a copy-paste prompt for [Claud
 
 You paste it into Claude Design, iterate visually, export, and drop the export into `specs/NNN-slug/04-design/`.
 
-## 6. Import the design — `/import-design`
+## 7. Import the design — `/import-design`
 
 The **frontend-engineer** role reads the export, installs exactly the shadcn components it names, copies the theme tokens into the app, and builds one route or component per artboard, wired to mock data first. Scenario tags become `data-testid` hooks so the Gherkin tests can find each element. Playwright screenshots are compared against the export.
 
-## 7. Tech plan — `/tech-plan`
+## 8. Tech plan — `/tech-plan`
 
 The **architect** role decides *how*: a Mermaid diagram, the data model, API contracts, and an ordered list of thin **vertical slices**, each mapped to scenario tags, files and tests. Consequential choices become ADRs. Then grill it again — this is the cheapest moment to change your mind.
 
-## 8. Build — `/build`
+## 9. Build — `/build`
 
 One scenario at a time:
 
@@ -87,15 +108,15 @@ bind steps ─► run ─► 🔴 see it fail for the right reason ─► minima
 
 The engineers (frontend, backend, qa) split the work when it helps. If the spec is ambiguous, the build stops and asks — it never silently invents behaviour.
 
-## 9. Review — `/review` and `/security-check`
+## 10. Review — `/review` and `/security-check`
 
 The **code-reviewer** and **security-reviewer** roles look at the branch with fresh eyes: spec match, correctness, test quality, accessibility, security, readability, docs. Findings come ranked with `file:line` and a suggested fix.
 
-## 10. Ship — `/ship`
+## 11. Ship — `/ship`
 
 Runs `npm run verify`, makes sure `PROGRESS.md` is folded into the docs, commits, pushes, and opens a pull request with the spec link, scenario tags, test evidence and a rollback plan. It asks before pushing.
 
-## 11. Deploy — `/deploy`
+## 12. Deploy — `/deploy`
 
 Routes to the cloud in your Project Profile:
 

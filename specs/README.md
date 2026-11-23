@@ -16,6 +16,7 @@ That creates the next folder and walks you through stages 00 → 03. Run `/next`
 specs/NNN-feature-slug/
   00-input.md            the raw input, verbatim — never edited
   01-prd.md              the PRD — requirements with IDs (FR-1, NFR-1…)
+  02-stories.md          user stories: story map, build order, cards with tagged acceptance criteria
   02-scenarios/          Gherkin .feature files — the acceptance tests
   03-design-prompt.md    copy-paste prompt for Claude Design
   04-design/             drop the Claude Design export here
@@ -28,6 +29,7 @@ specs/NNN-feature-slug/
 | 00 | `00-input.md` | `/new-feature` (or `/prd` with raw text) |
 | 01 | `01-prd.md` | `/prd` |
 | — | `grill-log.md` | `/grill` |
+| 02 | `02-stories.md` | `/stories` |
 | 02 | `02-scenarios/*.feature` | `/scenarios` |
 | 03 | `03-design-prompt.md` | `/design-prompt` |
 | 04 | `04-design/` | you, exporting from Claude Design → then `/import-design` |

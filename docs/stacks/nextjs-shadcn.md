@@ -36,7 +36,7 @@ pnpm add -D drizzle-kit @types/pg vitest @vitejs/plugin-react jsdom @testing-lib
 pnpm exec playwright install --with-deps chromium
 ```
 
-`package.json` scripts (ShipRight expects these names):
+`package.json` scripts (Shipright expects these names):
 
 | Script | Command | Used by |
 | --- | --- | --- |

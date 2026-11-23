@@ -45,6 +45,8 @@ How to use this template
 
 ## 6. User stories
 
+<High-level needs, one per line. `/stories` later cuts each into delivery-sized stories in `02-stories.md`, keeping the number: US-2 → US-2.1, US-2.2.>
+
 - **US-1** — As <persona>, I want <capability> so that <benefit>. → FR-1, FR-2
 - **US-2** — …
 

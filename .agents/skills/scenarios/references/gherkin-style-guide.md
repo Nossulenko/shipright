@@ -1,6 +1,6 @@
 # Gherkin style guide
 
-How ShipRight writes `.feature` files. The short version: **business language, one behaviour per scenario, every scenario tagged.**
+How Shipright writes `.feature` files. The short version: **business language, one behaviour per scenario, every scenario tagged.**
 
 ---
 

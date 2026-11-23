@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ShipRight — set up Workload Identity Federation so GitHub Actions can deploy to
+# Shipright — set up Workload Identity Federation so GitHub Actions can deploy to
 # Cloud Run WITHOUT a service-account key.
 #
 # Creates (skipping anything that already exists):

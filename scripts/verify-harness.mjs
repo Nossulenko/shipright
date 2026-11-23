@@ -167,6 +167,40 @@ function checkLinks() {
 }
 
 // ── gherkin ───────────────────────────────────────────────────────────────
+const REQUIREMENT_TAG = /^@(?:N?FR-\d+|US-\d+(?:\.\d+)?)$/;
+
+// 02-stories.md next to the scenarios: which story owns which pre-assigned scenario tag
+const storiesCache = new Map();
+function storiesFor(featureFile) {
+  const spec = featureFile.split("/").slice(0, -2).join("/"); // <spec>/02-scenarios/x.feature → <spec>
+  if (storiesCache.has(spec)) return storiesCache.get(spec);
+  const file = `${spec}/02-stories.md`;
+  let result = null;
+  if (existsSync(join(ROOT, file))) {
+    const ids = new Set();
+    const tagOwner = new Map();
+    let current = null;
+    for (const line of read(file).split(/\r?\n/)) {
+      const h = /^### (US-\d+(?:\.\d+)?)\b/.exec(line);
+      if (h) {
+        current = h[1];
+        if (ids.has(current)) fail("stories", `${file}: ${current} has two cards`);
+        ids.add(current);
+        continue;
+      }
+      if (/^## /.test(line)) current = null;
+      if (!current) continue;
+      for (const m of line.matchAll(/^\s*- `@([A-Z]{2,6}-\d{2,})`/g)) {
+        if (tagOwner.has(m[1])) fail("stories", `${file}: @${m[1]} appears under both ${tagOwner.get(m[1])} and ${current}`);
+        tagOwner.set(m[1], current);
+      }
+    }
+    result = { file, ids, tagOwner };
+  }
+  storiesCache.set(spec, result);
+  return result;
+}
+
 function checkGherkin() {
   const features = [...walk("specs", (p) => p.endsWith(".feature")), ...walk("examples", (p) => p.endsWith(".feature"))];
   const tagsBySpec = new Map();
@@ -189,9 +223,17 @@ function checkGherkin() {
       if (/^(Scenario|Scenario Outline|Scenario Template|Example):/.test(t)) {
         const where = `${file}:${i + 1}`;
         const inherited = [...featureTags, ...ruleTags, ...pending];
-        const scenarioTag = pending.find((x) => /^@[A-Z]{2,6}-\d{2,}$/.test(x) && !/^@N?FR-/.test(x));
+        const scenarioTag = pending.find((x) => /^@[A-Z]{2,6}-\d{2,}$/.test(x) && !/^@(?:N?FR|US)-/.test(x));
         if (!scenarioTag) fail("gherkin", `${where}: scenario needs its own scenario tag like @LUNCH-03`);
-        if (!inherited.some((x) => /^@N?FR-\d+$/.test(x))) fail("gherkin", `${where}: scenario needs a requirement tag like @FR-2`);
+        if (!inherited.some((x) => REQUIREMENT_TAG.test(x))) fail("gherkin", `${where}: scenario needs a requirement tag like @FR-2 (or @US-3 in quick mode)`);
+        const stories = storiesFor(file);
+        if (stories && scenarioTag) {
+          const owner = stories.tagOwner.get(scenarioTag.slice(1));
+          const usTag = inherited.find((x) => /^@US-\d+(?:\.\d+)?$/.test(x));
+          if (!owner) fail("stories", `${where}: ${scenarioTag} is not in any story's acceptance criteria — add it to ${stories.file}`);
+          else if (usTag && usTag.slice(1) !== owner) fail("stories", `${where}: tagged ${usTag} but ${stories.file} puts ${scenarioTag} under ${owner}`);
+          if (usTag && !stories.ids.has(usTag.slice(1))) fail("stories", `${where}: ${usTag} has no card in ${stories.file}`);
+        }
         if (scenarioTag) {
           const spec = file.split("/").slice(0, 2).join("/");
           const seen = tagsBySpec.get(spec) ?? new Map();

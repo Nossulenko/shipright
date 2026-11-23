@@ -53,7 +53,7 @@ az provider register --namespace Microsoft.KeyVault
 
 ### Step 1 — Container runs locally
 
-Confirm `/deploy` preflight passed for `apps/$APP`. The ShipRight Dockerfiles listen on `$PORT` (default 8080) and declare `EXPOSE 8080`.
+Confirm `/deploy` preflight passed for `apps/$APP`. The Shipright Dockerfiles listen on `$PORT` (default 8080) and declare `EXPOSE 8080`.
 
 ### Step 2 — 💰 Budget alert (before anything paid)
 
@@ -163,7 +163,7 @@ Rollback (put this in the runbook): images are tagged with the commit SHA, so re
 
 ## Static frontends (optional)
 
-The ShipRight default for a static SPA is the same Container App flow with the stack profile's nginx Dockerfile — OIDC end to end. **Azure Static Web Apps** (free tier available) is an alternative: `az staticwebapp create --name $NAME-static --resource-group $RG --location <region> --sku Free`. Its GitHub deploy action authenticates with a **deployment token**, which is a long-lived secret: if you choose it, store the token as a GitHub *environment* secret, never in the repo, and rotate it with `az staticwebapp secrets reset-api-key`.
+The Shipright default for a static SPA is the same Container App flow with the stack profile's nginx Dockerfile — OIDC end to end. **Azure Static Web Apps** (free tier available) is an alternative: `az staticwebapp create --name $NAME-static --resource-group $RG --location <region> --sku Free`. Its GitHub deploy action authenticates with a **deployment token**, which is a long-lived secret: if you choose it, store the token as a GitHub *environment* secret, never in the repo, and rotate it with `az staticwebapp secrets reset-api-key`.
 
 ## 🗑️ Teardown
 

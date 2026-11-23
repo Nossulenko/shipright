@@ -1,6 +1,6 @@
 # Testing standards
 
-In ShipRight the Gherkin scenarios in `specs/` **are** the acceptance tests. Everything else in this file exists to make those scenarios fast, honest and trustworthy.
+In Shipright the Gherkin scenarios in `specs/` **are** the acceptance tests. Everything else in this file exists to make those scenarios fast, honest and trustworthy.
 
 ---
 

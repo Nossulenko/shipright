@@ -14,7 +14,7 @@ A **secret** is anything that grants access: passwords, API keys, tokens, databa
 - **In the browser: nothing is secret.** Anything in client code or `NEXT_PUBLIC_*` / `VITE_*` variables is public.
 - **If a secret leaks:** deleting it from the code is not enough. **Rotate it** — revoke the old one at the provider and issue a new one — then clean up. Tell someone immediately; it's a normal event, not a disgrace.
 
-ShipRight's guard hook blocks writes that look like keys, and the pre-commit hook scans staged changes. They are a safety net, not a substitute for the habit.
+Shipright's guard hook blocks writes that look like keys, and the pre-commit hook scans staged changes. They are a safety net, not a substitute for the habit.
 
 ## 2. CI authenticates with OIDC, not stored keys
 

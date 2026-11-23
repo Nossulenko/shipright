@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
-# ShipRight pre-push: the full verify suite — the same gates CI runs.
-echo "▶ ShipRight pre-push: npm run verify"
+# Shipright pre-push: the full verify suite — the same gates CI runs.
+echo "▶ Shipright pre-push: npm run verify"
 node scripts/verify.mjs || {
   echo "✗ verify failed — push cancelled. Ask your agent: \"explain why verify failed\"."
   exit 1

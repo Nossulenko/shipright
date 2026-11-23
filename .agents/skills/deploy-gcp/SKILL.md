@@ -54,7 +54,7 @@ gcloud billing accounts list         # you need an OPEN billing account
 
 ### Step 1 — Container runs locally
 
-Confirm `/deploy` preflight passed for `apps/$APP`. Cloud Run sends traffic to the port in the `PORT` environment variable (8080 by default) — the ShipRight Dockerfiles already listen on `$PORT`.
+Confirm `/deploy` preflight passed for `apps/$APP`. Cloud Run sends traffic to the port in the `PORT` environment variable (8080 by default) — the Shipright Dockerfiles already listen on `$PORT`.
 
 ### Step 2 — 💰 Budget alert (before anything paid)
 
@@ -160,7 +160,7 @@ Rollback (put this in the runbook): list revisions with `gcloud run revisions li
 
 ## Static frontends (optional)
 
-A static SPA (React + Vite) deploys the same way: the stack profile's nginx Dockerfile serves the built files on Cloud Run. **Firebase Hosting** is an alternative for static sites (`npm i -g firebase-tools`, `firebase login`, `firebase init hosting`, `firebase deploy --only hosting`). Its usual GitHub Action asks for a service-account key — ShipRight avoids keys, so in CI authenticate with `google-github-actions/auth` (WIF) first and then run `npx firebase-tools deploy --only hosting`; grant the deployer `roles/firebasehosting.admin`.
+A static SPA (React + Vite) deploys the same way: the stack profile's nginx Dockerfile serves the built files on Cloud Run. **Firebase Hosting** is an alternative for static sites (`npm i -g firebase-tools`, `firebase login`, `firebase init hosting`, `firebase deploy --only hosting`). Its usual GitHub Action asks for a service-account key — Shipright avoids keys, so in CI authenticate with `google-github-actions/auth` (WIF) first and then run `npx firebase-tools deploy --only hosting`; grant the deployer `roles/firebasehosting.admin`.
 
 ## 🗑️ Teardown
 

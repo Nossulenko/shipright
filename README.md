@@ -1,11 +1,9 @@
-<p align="center">
+<h1 align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
-    <img alt="ShipRight" src="docs/assets/logo-light.svg" width="88">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.png">
+    <img alt="Shipright" src="docs/assets/logo.png" width="380">
   </picture>
-</p>
-
-<h1 align="center">ShipRight</h1>
+</h1>
 
 <p align="center">
   From a messy idea to a deployed product: spec first, test first, every decision grilled.<br/>
@@ -26,14 +24,15 @@
 </p>
 
 <p align="center">
-  <img alt="The ShipRight pipeline: raw idea, PRD, grill, Gherkin, Claude Design, tech plan, grill, build, ship and deploy" src="docs/assets/pipeline.svg" width="840">
+  <img alt="The Shipright pipeline, animated: raw idea, PRD, grill, Gherkin, Claude Design, tech plan, grill, build, ship and deploy to AWS, Azure or Google Cloud" src="docs/assets/pipeline.gif" width="840">
 </p>
 
-## What is ShipRight?
+## What is Shipright?
 
-Drop in raw input (meeting notes, a Slack thread, a one-line idea) and ShipRight walks it to production. It becomes a **PRD**, then **Gherkin scenarios**, then a **Claude Design prompt** that generates your frontend, then **tested code**, and finally a **live URL on AWS, Azure or Google Cloud**. Twelve AI roles cover the whole SDLC, and a **griller** challenges every decision while it is still cheap to change. Deterministic guardrails keep the agent from doing anything you'd regret. It runs in **Claude Code**, **Codex** and **GitHub Copilot**, and it is built for **junior developers**: every step explains itself.
+Drop in raw input (meeting notes, a Slack thread, a one-line idea) and Shipright walks it to production. It becomes a **PRD**, then **user stories**, then **Gherkin scenarios**, then a **Claude Design prompt** that generates your frontend, then **tested code**, and finally a **live URL on AWS, Azure or Google Cloud**. Twelve AI roles cover the whole SDLC, and a **griller** challenges every decision while it is still cheap to change. Deterministic guardrails keep the agent from doing anything you'd regret. It runs in **Claude Code**, **Codex** and **GitHub Copilot**, and it is built for **junior developers**: every step explains itself.
 
-- 📝 **Spec-driven, end to end.** Raw input → PRD → Gherkin → design → tech plan → code. Every scenario carries a tag (`@LUNCH-03`) that follows it into the design, tests, commits and PRs.
+- 📝 **Spec-driven, end to end.** Raw input → PRD → user stories → Gherkin → design → tech plan → code. Every scenario carries a tag (`@LUNCH-03`) that follows it into the design, tests, commits and PRs.
+- 🧩 **Stories that ship.** `/stories` cuts a PRD or epic into INVEST user stories on a story map: walking skeleton first, vertical slices only, ten proven splitting patterns, and Given/When/Then criteria that become the Gherkin scenarios word for word.
 - 🔥 **A griller for your decisions.** An adversarial reviewer asks the question you forgot and offers its own best answer. Every decision gets a verdict: ✅ defended, ⚠️ accepted risk, or ❌ revise.
 - 🎨 **Claude Design, wired in.** `/design-prompt` writes a copy-paste prompt that maps screens to scenarios, demands every UI state and fixes the output format, using **shadcn/ui by default**. `/import-design` then turns the export into real components.
 - 🧑‍🤝‍🧑 **An AI team for the whole SDLC.** Product manager, business analyst, UX designer, architect, griller, frontend, backend, QA, security, DevOps, code reviewer, and a mentor who explains it all.
@@ -44,7 +43,7 @@ Drop in raw input (meeting notes, a Slack thread, a one-line idea) and ShipRight
 ```text
 /start                     # 2 minutes: pick your stack, cloud and design library
 /scaffold                  # create the app for that stack, tests and Dockerfile included
-/new-feature notes.md      # raw idea → PRD → 🔥 grill → Gherkin → Claude Design prompt
+/new-feature notes.md      # raw idea → PRD → 🔥 grill → stories → Gherkin → Claude Design prompt
 /import-design             # Claude Design export → shadcn/ui components
 /tech-plan  →  /grill      # how we'll build it, then try to break it
 /build @LUNCH-01           # one scenario at a time: red → green → refactor
@@ -85,7 +84,8 @@ npm run setup        # turns on the git hooks and checks your tools (Node 20+, g
 | 00 | Capture       | `/new-feature`                | product-manager                   | `00-input.md`: your raw input, verbatim              |
 | 01 | PRD           | `/prd`                        | product-manager                   | `01-prd.md`: problem, users, scope, `FR-n` / `NFR-n` |
 | 🔥 | Grill         | `/grill`                      | griller                           | `grill-log.md`: questions, answers, verdicts         |
-| 02 | Scenarios     | `/scenarios`                  | business-analyst                  | `02-scenarios/*.feature`: tagged Gherkin             |
+| 02 | Stories       | `/stories`                    | business-analyst                  | `02-stories.md`: story map, build order, INVEST cards |
+| 02 | Scenarios     | `/scenarios`                  | business-analyst                  | `02-scenarios/*.feature`: the stories' criteria as tagged Gherkin |
 | 03 | Design prompt | `/design-prompt`              | ux-designer                       | `03-design-prompt.md`, ready to paste into Claude Design |
 | 04 | Design import | `/import-design`              | frontend-engineer                 | real components built from the `04-design/` export   |
 | 05 | Tech plan     | `/tech-plan`                  | architect                         | `05-tech-plan.md` + ADRs                             |
@@ -99,7 +99,7 @@ Each stage writes one file into `specs/NNN-feature/`, and each one ends with a g
 
 ## Claude Design handoff
 
-The step where most vibe-coded products fall apart is **design → code**. The design tool invents components that don't exist, and the code drifts away from the design. ShipRight closes the gap from both ends.
+The step where most vibe-coded products fall apart is **design → code**. The design tool invents components that don't exist, and the code drifts away from the design. Shipright closes the gap from both ends.
 
 `/design-prompt` turns your scenarios into a prompt for [Claude Design](https://claude.com/design): screens mapped to scenario tags, every empty / loading / error / success state, real copy, WCAG 2.2 AA, responsive rules. It always ends with a fixed **output format**, so the export can be imported mechanically:
 
@@ -139,7 +139,7 @@ Run `/grill` on a PRD, tech plan, ADR, PR, dependency or cloud choice, or on any
 | Role                   | What it does                                                         | Edits      |
 | ---------------------- | -------------------------------------------------------------------- | ---------- |
 | 🧭 `product-manager`   | Raw input → PRD: problem, users, scope, success metrics              | specs      |
-| 🥒 `business-analyst`  | PRD → Gherkin: edge cases, error paths, coverage matrix               | specs      |
+| 🥒 `business-analyst`  | PRD → user stories → Gherkin: splits, edge cases, coverage matrix     | specs      |
 | 🎨 `ux-designer`       | Scenarios → Claude Design prompt: flows, states, accessibility        | specs      |
 | 🏛️ `architect`         | Tech plan, data model, API contracts, ADRs                            | docs       |
 | 🔥 `griller`           | Adversarial review of any decision, plan or PR                        | read-only  |
@@ -167,7 +167,7 @@ Every cloud skill follows the same steps: preflight (it shows your account and r
 
 ## Cross-stack
 
-ShipRight is opinionated by default and flexible when you need it to be. `/start` records your stack, `/scaffold` builds it from the matching [stack profile](docs/stacks/README.md), and `npm run verify` auto-detects every app under `apps/` and runs its gates.
+Shipright is opinionated by default and flexible when you need it to be. `/start` records your stack, `/scaffold` builds it from the matching [stack profile](docs/stacks/README.md), and `npm run verify` auto-detects every app under `apps/` and runs its gates.
 
 | Profile                                                | Kind            | BDD runner (runs your `.feature` files) |
 | ------------------------------------------------------ | --------------- | ---------------------------------------- |
@@ -182,7 +182,7 @@ ShipRight is opinionated by default and flexible when you need it to be. `/start
 
 ## Guardrails
 
-The agent is fast, tireless and fallible. Instead of reviewing every line, ShipRight stacks deterministic checks. Each one is imperfect, but together they are very hard to slip past:
+The agent is fast, tireless and fallible. Instead of reviewing every line, Shipright stacks deterministic checks. Each one is imperfect, but together they are very hard to slip past:
 
 ```text
 PreToolUse guard    blocks rm -rf /, force-push to main, DROP TABLE, secrets in code;
@@ -211,11 +211,11 @@ Two MCP servers come pre-wired: **Playwright**, so the agent can open and click 
 ```
 AGENTS.md              the agent contract + your Project Profile (read by every runtime)
 CLAUDE.md              one line: @AGENTS.md
-ADOPT.md               playbook for bringing ShipRight into an existing repo
-.agents/skills/        19 skills: the pipeline, build/review/ship, deploy-aws|azure|gcp, mentor
+ADOPT.md               playbook for bringing Shipright into an existing repo
+.agents/skills/        20 skills: the pipeline, build/review/ship, deploy-aws|azure|gcp, mentor
 .agents/roles/         12 SDLC roles (source of truth for every runtime's subagents)
 .claude/ .codex/ .github/agents/   generated runtime adapters + hook wiring
-specs/                 your features: specs/NNN-slug/00-input.md … 05-tech-plan.md
+specs/                 your features: specs/NNN-slug/00-input.md, 01-prd.md, 02-stories.md … 05-tech-plan.md
 examples/              a complete worked example (team lunch poll)
 apps/                  your code, created by /scaffold (apps/web, apps/api, …)
 docs/workflow.md       the pipeline, stage by stage

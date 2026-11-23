@@ -1,4 +1,4 @@
-# ShipRight — deploy to Google Cloud Run on every push to main.
+# Shipright — deploy to Google Cloud Run on every push to main.
 #
 # Copy to .github/workflows/deploy-gcp.yml. No secrets needed: authentication uses
 # Workload Identity Federation (short-lived OIDC tokens). Set these GitHub repository

@@ -44,7 +44,7 @@ Write an ordered task list. Rules:
 - **T0 is a walking skeleton** if the app or this area doesn't exist yet: the thinnest path that runs end to end (page → server → database → page) and passes `npm run verify`.
 - Every later task is a **vertical slice** (UI + logic + data + test) that makes specific scenarios pass. No "build all the tables" or "do the whole UI" tasks.
 - Each task lists: **ID**, **scenario tags**, **what changes**, **files**, **test that proves it** (the scenario + any unit tests), **size** S/M/L. Split any L.
-- Order by dependency, then by value (happy paths before edges).
+- Order by the **build order in `02-stories.md`** when it exists (walking skeleton first); otherwise by dependency, then by value (happy paths before edges). Neighbouring stories may share a task, and a task may be pulled forward for a technical reason — say why in one line.
 
 ### Step 6 — Non-functionals, risks, rollout
 

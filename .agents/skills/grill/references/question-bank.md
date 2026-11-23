@@ -70,6 +70,16 @@ Starting points, not a script. Always rewrite a question so it is **specific to 
 - Which assumption in the Assumptions table is most likely false?
 - Are there more than ~8 Musts? Which ones are really Shoulds?
 
+### Stories (`02-stories.md`)
+- If only the walking skeleton shipped, would your main persona actually use it? What's the smallest thing that's missing?
+- Which story is really a layer ("build the API", "set up the database") wearing a story costume?
+- Which "so that" just restates the "I want"? What's the real benefit behind it?
+- Which story would you struggle to demo in one sentence? That one is too big.
+- Which split leaves the first child useless on its own? Try a different pattern.
+- Which story depends on another that's scheduled *after* it in the build order?
+- Which deferred edge case makes the happy path unsafe (double charge, data leak, wrong winner)?
+- Is any Must requirement covered only by a Could story?
+
 ### Scenarios (`02-scenarios/`)
 - Which Must FR has only a happy-path scenario and no `@error` or `@edge` case?
 - What happens at the boundaries — zero, one, the maximum, just past the maximum?

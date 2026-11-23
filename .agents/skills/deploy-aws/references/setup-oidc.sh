@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ShipRight — let GitHub Actions deploy to AWS WITHOUT access keys.
+# Shipright — let GitHub Actions deploy to AWS WITHOUT access keys.
 #
 # Creates (skipping anything that already exists):
 #   1. the GitHub OIDC identity provider     token.actions.githubusercontent.com (once per account)

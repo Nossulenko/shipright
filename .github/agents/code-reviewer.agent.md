@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: "Read-only pre-PR reviewer. Reviews a branch or file set against the ShipRight review lenses (spec match, correctness, tests, security basics, accessibility, performance, readability, docs sync, operability) and returns ranked findings with file:line and a suggested fix. Delegate before /ship or when the human asks for a second pair of eyes. It never edits."
+description: "Read-only pre-PR reviewer. Reviews a branch or file set against the Shipright review lenses (spec match, correctness, tests, security basics, accessibility, performance, readability, docs sync, operability) and returns ranked findings with file:line and a suggested fix. Delegate before /ship or when the human asks for a second pair of eyes. It never edits."
 tools: ["read","search"]
 ---
 

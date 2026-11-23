@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# ShipRight pre-commit: no commits on main, no secrets, harness stays consistent.
+# Shipright pre-commit: no commits on main, no secrets, harness stays consistent.
 
 branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 if [ "$branch" = "main" ] || [ "$branch" = "master" ]; then

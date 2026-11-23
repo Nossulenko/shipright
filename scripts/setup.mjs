@@ -3,7 +3,7 @@
  * `npm run setup` — one-time local setup. Safe to re-run.
  *   • points git at the versioned hooks in .githooks/
  *   • makes the hook scripts executable
- *   • checks the tools ShipRight expects and says how to install what is missing
+ *   • checks the tools Shipright expects and says how to install what is missing
  */
 import { spawnSync } from "node:child_process";
 import { chmodSync, existsSync, readdirSync } from "node:fs";
@@ -14,7 +14,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ok = (m) => console.log(`  ✓ ${m}`);
 const miss = (m) => console.log(`  ✗ ${m}`);
 
-console.log("\nShipRight setup\n");
+console.log("\nShipright setup\n");
 
 const hooks = spawnSync("git", ["config", "core.hooksPath", ".githooks"], { cwd: ROOT });
 if (hooks.status === 0) ok("git hooks enabled (.githooks/pre-commit, .githooks/pre-push)");
@@ -31,7 +31,7 @@ const version = (cmd, args = ["--version"]) => {
 
 console.log("\nTools");
 const major = Number(process.versions.node.split(".")[0]);
-major >= 20 ? ok(`node ${process.versions.node}`) : miss(`node ${process.versions.node} — ShipRight needs Node 20 or newer (https://nodejs.org)`);
+major >= 20 ? ok(`node ${process.versions.node}`) : miss(`node ${process.versions.node} — Shipright needs Node 20 or newer (https://nodejs.org)`);
 
 const tools = [
   ["git", ["--version"], "https://git-scm.com/downloads", true],

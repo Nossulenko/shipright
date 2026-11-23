@@ -145,6 +145,8 @@ All mutations are server actions returning `{ ok: true, data } | { ok: false, er
 
 ## 6. Tasks — thin vertical slices, in order
 
+Tasks follow the build order in [`02-stories.md`](02-stories.md), with two technical exceptions: T4 (validation, US-1.2) sits next to the create form (T3) because both use the same schema, and T6 builds "change my vote" (US-2.2) together with the two-tab case of US-2.1 (@LUNCH-10) because both are the same database upsert.
+
 | ID | Scenarios | What changes | Files | Proven by | Size |
 | --- | --- | --- | --- | --- | --- |
 | T0 | — (skeleton) | Next.js app via `/scaffold`, Drizzle + local Postgres (Docker Compose), `/api/health`, `lib/clock.ts` with test override, playwright-bdd wired to `02-scenarios/`, one trivial passing step, deploy to Cloud Run | `apps/web/**`, `docker-compose.yml`, `playwright.config.ts` | `npm run verify` green; health 200 locally and on Cloud Run | M |

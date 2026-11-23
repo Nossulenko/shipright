@@ -52,7 +52,7 @@ Run each check and show the result. Stop at the first failure, explain it in pla
    ```bash
    npm run verify
    ```
-2. **A Dockerfile exists** at `apps/<name>/Dockerfile`. If not, create it from the "Container" section of the matching stack profile in [`docs/stacks/`](../../../docs/stacks/README.md). Every ShipRight Dockerfile is multi-stage, runs as a non-root user and listens on the `PORT` environment variable. Also make sure `apps/<name>/.dockerignore` exists and excludes `node_modules`, `.env*`, `.git`, build output and test reports.
+2. **A Dockerfile exists** at `apps/<name>/Dockerfile`. If not, create it from the "Container" section of the matching stack profile in [`docs/stacks/`](../../../docs/stacks/README.md). Every Shipright Dockerfile is multi-stage, runs as a non-root user and listens on the `PORT` environment variable. Also make sure `apps/<name>/.dockerignore` exists and excludes `node_modules`, `.env*`, `.git`, build output and test reports.
 3. **The image builds**
    ```bash
    docker build -t <name>:local apps/<name>

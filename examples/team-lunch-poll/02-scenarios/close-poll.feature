@@ -10,7 +10,7 @@ Feature: Close a lunch poll and show the result
       | Burger Barn  |
       | Falafel Stop |
 
-  @LUNCH-14 @FR-5 @FR-6 @happy
+  @LUNCH-14 @US-4.1 @FR-5 @FR-6 @happy
   Scenario: The poll closes at its closing time and shows the winner
     Given the poll has 4 votes for "Falafel Stop", 3 for "Burger Barn" and 2 for "Thai Garden"
     When the time reaches 11:45
@@ -18,14 +18,14 @@ Feature: Close a lunch poll and show the result
     And members see "Falafel Stop" as the winner with 4 votes
     And members see the vote count for every option
 
-  @LUNCH-15 @FR-6 @edge
+  @LUNCH-15 @US-4.2 @FR-6 @edge
   Scenario: A tie is shown as a tie
     Given the poll has 3 votes for "Burger Barn", 3 for "Falafel Stop" and 2 for "Thai Garden"
     When the time reaches 11:45
     Then members see "It's a tie between Burger Barn and Falafel Stop"
     And no single winner is shown
 
-  @LUNCH-16 @FR-6 @edge
+  @LUNCH-16 @US-4.2 @FR-6 @edge
   Scenario: A poll that nobody voted in closes without a winner
     Given the poll has no votes
     When the time reaches 11:45
@@ -34,7 +34,7 @@ Feature: Close a lunch poll and show the result
 
   Rule: Only the creator can close a poll early
 
-    @LUNCH-17 @FR-8 @happy
+    @LUNCH-17 @US-5 @FR-8 @happy
     Scenario: The creator closes the poll before its closing time
       Given it is 11:20
       And the poll has 5 votes for "Thai Garden" and 4 for "Burger Barn"
@@ -42,7 +42,7 @@ Feature: Close a lunch poll and show the result
       Then the poll "Friday lunch" is closed
       And members see "Thai Garden" as the winner with 5 votes
 
-    @LUNCH-18 @FR-8 @error
+    @LUNCH-18 @US-5 @FR-8 @error
     Scenario: A member who did not create the poll cannot close it early
       Given it is 11:20
       And Sam is signed in as a member of the "Platform" team

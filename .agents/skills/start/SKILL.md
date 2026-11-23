@@ -1,23 +1,23 @@
 ---
 name: start
-description: User-invoked only. First-run onboarding for ShipRight — checks the tools on this machine, turns on the git hooks, interviews the human one question at a time, and fills in the Project Profile in AGENTS.md. Re-run any time to change an answer.
+description: User-invoked only. First-run onboarding for Shipright — checks the tools on this machine, turns on the git hooks, interviews the human one question at a time, and fills in the Project Profile in AGENTS.md. Re-run any time to change an answer.
 argument-hint: "[optional: the setting to change, e.g. cloud]"
 disable-model-invocation: true
 ---
 
-# /start — Set up ShipRight for your product
+# /start — Set up Shipright for your product
 
 > **Role:** mentor (main conversation) · **Input:** this machine + the human's answers · **Output:** filled Project Profile in `AGENTS.md`, git hooks on · **Next:** `/scaffold`, then `/new-feature`
 
 ## What this does
 
-Gets a brand-new ShipRight project ready in about five minutes. You check that the right tools are installed, switch on the safety hooks, and ask the human a short list of questions about their product. Their answers go into the **Project Profile** table at the top of `AGENTS.md`, which every other skill reads.
+Gets a brand-new Shipright project ready in about five minutes. You check that the right tools are installed, switch on the safety hooks, and ask the human a short list of questions about their product. Their answers go into the **Project Profile** table at the top of `AGENTS.md`, which every other skill reads.
 
 ## Before you start
 
 - If an argument names a single setting (e.g. `/start cloud`), skip to Step 3 and ask only about that setting, then go to Step 4.
 - If the Project Profile already has values, show them first and ask: *"Want to change anything, or keep these?"* Only re-ask the settings they want to change.
-- Greet the human by explaining in two sentences what ShipRight is: *"ShipRight walks you from a raw idea to a deployed product. Every feature goes idea → PRD → Gherkin scenarios → design → code → deploy, and I'll explain each step as we go."*
+- Greet the human by explaining in two sentences what Shipright is: *"Shipright walks you from a raw idea to a deployed product. Every feature goes idea → PRD → Gherkin scenarios → design → code → deploy, and I'll explain each step as we go."*
 
 ## Steps
 
@@ -64,7 +64,7 @@ If `gh auth status` fails, suggest they run `! gh auth login` (the `!` runs it i
 npm run setup
 ```
 
-This points git at `.githooks/` so every commit and push runs ShipRight's checks (no commits on `main`, secret scan, `npm run verify`). Explain that in one sentence. Confirm with `git config core.hooksPath` → `.githooks`.
+This points git at `.githooks/` so every commit and push runs Shipright's checks (no commits on `main`, secret scan, `npm run verify`). Explain that in one sentence. Confirm with `git config core.hooksPath` → `.githooks`.
 
 ### Step 3 — Interview (one question at a time)
 
@@ -117,7 +117,7 @@ Mention `/next` (tells you what to do next at any moment) and `/explain` (explai
 
 ## Tell the human
 
-> ✅ **ShipRight is set up for <Product name>.**
+> ✅ **Shipright is set up for <Product name>.**
 > Stack: <frontend> / <backend> · Design: <design library> · Cloud: <cloud or "later">
 >
 > **What I did:** checked your tools, turned on git safety hooks, saved your choices to the Project Profile in `AGENTS.md`.

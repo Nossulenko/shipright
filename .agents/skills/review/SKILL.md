@@ -1,6 +1,6 @@
 ---
 name: review
-description: Self-review of the current branch before a pull request — checks the diff against the ShipRight review lenses (spec match and scenario coverage, correctness, tests, security, accessibility, performance, readability, docs sync, operability), delegating to the code-reviewer and security-reviewer roles in parallel, and returns ranked findings with file:line. Use when the human asks for a review, before /ship, or when all scenarios of a feature are green.
+description: Self-review of the current branch before a pull request — checks the diff against the Shipright review lenses (spec match and scenario coverage, correctness, tests, security, accessibility, performance, readability, docs sync, operability), delegating to the code-reviewer and security-reviewer roles in parallel, and returns ranked findings with file:line. Use when the human asks for a review, before /ship, or when all scenarios of a feature are green.
 argument-hint: "[optional: base branch, default main]"
 ---
 

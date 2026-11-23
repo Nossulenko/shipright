@@ -1,14 +1,14 @@
 # Glossary
 
-Plain-language definitions for every term ShipRight uses. If you meet a word that isn't here, ask `/explain <word>` — and suggest adding it.
+Plain-language definitions for every term Shipright uses. If you meet a word that isn't here, ask `/explain <word>` — and suggest adding it.
 
-[A](#a) · [B](#b) · [C](#c) · [D](#d) · [E](#e) · [F](#f) · [G](#g) · [H](#h) · [I](#i) · [L](#l) · [M](#m) · [O](#o) · [P](#p) · [R](#r) · [S](#s) · [T](#t) · [V](#v) · [W](#w)
+[A](#a) · [B](#b) · [C](#c) · [D](#d) · [E](#e) · [F](#f) · [G](#g) · [H](#h) · [I](#i) · [L](#l) · [M](#m) · [O](#o) · [P](#p) · [R](#r) · [S](#s) · [T](#t) · [U](#u) · [V](#v) · [W](#w)
 
 ---
 
 ## A
 
-**Acceptance criteria** — The conditions a feature must meet to count as done, written from the user's point of view. In ShipRight they're written as Gherkin scenarios, so they double as tests.
+**Acceptance criteria** — The conditions a feature must meet to count as done, written from the user's point of view. In Shipright they're written as Gherkin scenarios, so they double as tests.
 
 **ADR (Architecture Decision Record)** — A short document recording one important technical decision: the context, the options, what was chosen and why. Stored in `docs/decisions/`, never edited after acceptance — a later ADR supersedes it instead. Like a ship's log for design choices.
 
@@ -26,7 +26,7 @@ Plain-language definitions for every term ShipRight uses. If you meet a word tha
 
 ## C
 
-**CI/CD (Continuous Integration / Continuous Delivery)** — Automation that runs on every push. CI checks the code (lint, tests, build); CD deploys it. ShipRight uses GitHub Actions.
+**CI/CD (Continuous Integration / Continuous Delivery)** — Automation that runs on every push. CI checks the code (lint, tests, build); CD deploys it. Shipright uses GitHub Actions.
 
 **Claude Design** — Anthropic's design tool (claude.ai/design) that turns a prompt into screens and clickable prototypes. `/design-prompt` writes the prompt for you; you export the result into `04-design/`.
 
@@ -40,6 +40,8 @@ Plain-language definitions for every term ShipRight uses. If you meet a word tha
 
 ## D
 
+**Definition of Ready** — The checklist a story must pass before anyone builds it: named persona, tagged acceptance criteria, passes INVEST, size `M` or smaller, no open question blocking it.
+
 **Distroless image** — A minimal container base image with only your app's runtime — no shell, no package manager. Smaller and safer, but harder to debug from inside.
 
 **Dockerfile** — The recipe for building a container image: start from this base, copy these files, install these packages, run this command. Each app has one in `apps/<name>/Dockerfile`.
@@ -47,6 +49,8 @@ Plain-language definitions for every term ShipRight uses. If you meet a word tha
 ## E
 
 **Environment variable** — A named setting given to a program from outside its code (`DATABASE_URL`, `PORT`). Lets the same code run with different settings locally and in production — and keeps secrets out of the code.
+
+**Epic** — A big chunk of work that is too large to build in one go ("team lunch polls"). You split it into user stories with `/stories`.
 
 ## F
 
@@ -58,7 +62,7 @@ Plain-language definitions for every term ShipRight uses. If you meet a word tha
 
 **Gherkin** — A structured plain-English format for describing behaviour: `Feature`, `Scenario`, `Given` (starting situation), `When` (action), `Then` (expected result). Files end in `.feature` and live in `specs/NNN-slug/02-scenarios/`.
 
-**GitHub environment** — A named deploy target in a GitHub repo (e.g. `production`) with its own variables, secrets and approval rules. ShipRight's deploy workflows use `environment: production`, and the cloud only trusts tokens from that environment.
+**GitHub environment** — A named deploy target in a GitHub repo (e.g. `production`) with its own variables, secrets and approval rules. Shipright's deploy workflows use `environment: production`, and the cloud only trusts tokens from that environment.
 
 **Grilling** — Having your decisions questioned hard, on purpose, before they're locked in. `/grill` asks one tough question at a time and records the answers in `grill-log.md`. It's cheaper to defend a decision now than to undo it later.
 
@@ -74,9 +78,11 @@ Plain-language definitions for every term ShipRight uses. If you meet a word tha
 
 **IaC (Infrastructure as Code)** — Describing cloud resources (databases, networks, services) in files (Terraform, Bicep, CloudFormation) instead of clicking in a console, so they can be reviewed, versioned and recreated.
 
-**IAM role** — In AWS, a set of permissions that a person, service or GitHub Actions run can *assume* for a short time, instead of using a permanent key. ShipRight's CI deploys by assuming a role through OIDC.
+**IAM role** — In AWS, a set of permissions that a person, service or GitHub Actions run can *assume* for a short time, instead of using a permanent key. Shipright's CI deploys by assuming a role through OIDC.
 
 **Idempotent** — Safe to run more than once with the same result. Running an idempotent setup script twice doesn't create two databases.
+
+**INVEST** — A checklist for good user stories: **I**ndependent, **N**egotiable, **V**aluable, **E**stimable, **S**mall, **T**estable. `/stories` scores every card against it.
 
 ## L
 
@@ -100,7 +106,7 @@ Plain-language definitions for every term ShipRight uses. If you meet a word tha
 
 **Observability** — How well you can tell what your running app is doing from the outside: logs, metrics (numbers over time) and traces (the path of one request).
 
-**OIDC (OpenID Connect)** — A standard for proving identity with short-lived signed tokens. In ShipRight, GitHub Actions uses OIDC to log in to AWS, Azure or Google Cloud **without storing any long-lived keys**.
+**OIDC (OpenID Connect)** — A standard for proving identity with short-lived signed tokens. In Shipright, GitHub Actions uses OIDC to log in to AWS, Azure or Google Cloud **without storing any long-lived keys**.
 
 **ORM (Object-Relational Mapper)** — A library that lets you work with database rows as objects in your language (Drizzle, Prisma, SQLAlchemy, EF Core) and usually manages migrations too.
 
@@ -138,7 +144,7 @@ Plain-language definitions for every term ShipRight uses. If you meet a word tha
 
 **Service account** — A non-human account that an app or pipeline uses to call cloud APIs (Google Cloud's term; similar to an AWS IAM role or an Azure managed identity). Give it least privilege.
 
-**shadcn/ui** — A collection of good-looking, accessible React components built on Tailwind CSS and Radix. Unlike most libraries, the components are copied into your project (`components/ui/`) so you own and can change them. ShipRight's default design library.
+**shadcn/ui** — A collection of good-looking, accessible React components built on Tailwind CSS and Radix. Unlike most libraries, the components are copied into your project (`components/ui/`) so you own and can change them. Shipright's default design library.
 
 **Skill** — A packaged, step-by-step workflow the AI follows, invoked with a slash command like `/prd` or `/build`. Defined in `.agents/skills/<name>/SKILL.md`.
 
@@ -146,7 +152,13 @@ Plain-language definitions for every term ShipRight uses. If you meet a word tha
 
 **Spec-driven development** — Writing the specification (PRD + scenarios) first and letting it drive the design, the tests and the code. The spec is the source of truth; code follows it.
 
+**Spike** — A short, time-boxed investigation ("can the hotel API answer in 2 s? one day") used when a story can't be sized because of an unknown. It produces knowledge, not shippable code.
+
+**Splitting pattern** — A proven way to cut a big story into smaller ones that still each deliver value: by workflow step, business rule, happy vs. edge path, data type, CRUD operation, or by deferring performance.
+
 **Step definition** — The code behind a Gherkin line. `When I vote for "Pizza"` is matched by a step definition that actually clicks the button or calls the API.
+
+**Story map** — A table with the user's activities across the top (*get in → start a poll → vote → get the result*) and stories underneath, grouped into release rows. The first row is the walking skeleton.
 
 **Subagent** — See **Role**.
 
@@ -158,12 +170,18 @@ Plain-language definitions for every term ShipRight uses. If you meet a word tha
 
 **Type-check** — Running the type checker (`tsc --noEmit`, mypy, pyright) to catch mistakes like passing a string where a number is expected, before the code runs.
 
+## U
+
+**User story** — One small thing a named person can do after we ship it, and why they care: *As Sam, I want to vote in two taps, so that I take part between calls.* Each has an ID (`US-2.1`) and Given/When/Then acceptance criteria. Lives in `specs/NNN-slug/02-stories.md`.
+
 ## V
 
-**Vertical slice** — A thin piece of a feature that goes through every layer (UI → API → database) and delivers something a user can actually do. ShipRight builds one scenario — one vertical slice — at a time.
+**Vertical slice** — A thin piece of a feature that goes through every layer (UI → API → database) and delivers something a user can actually do. Shipright builds one scenario — one vertical slice — at a time.
 
 **VPC (Virtual Private Cloud)** — Your own private network inside AWS. Every account has a *default VPC*, which ECS Express Mode uses unless you choose another.
 
 ## W
+
+**Walking skeleton** — The thinnest version of the product that works end to end, touching every step a user takes, even if each step is basic. You build and demo it first, then flesh it out.
 
 **Workload Identity Federation** — Google Cloud's way of letting GitHub Actions act as a service account without a stored key file: Google trusts tokens that GitHub signs for your repository. See **OIDC**.
