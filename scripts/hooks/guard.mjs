@@ -66,6 +66,19 @@ function checkShell(command) {
   for (const [pattern, decision, reason] of SHELL_RULES) {
     if (pattern.test(command)) return { decision, reason };
   }
+  // A bare `git push` (no explicit destination branch) goes to the upstream, which the
+  // patterns above cannot see. Resolve it so `git push` on a branch tracking main is caught.
+  const push = /\bgit\s+push\b([^;&|]*)/.exec(command);
+  if (push && push[1].split(/\s+/).filter((t) => t && !t.startsWith("-")).length < 2) {
+    try {
+      const target = execSync("git rev-parse --abbrev-ref --symbolic-full-name @{u}", { stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+      if (/\/(?:main|master)$/.test(target)) {
+        return { decision: "deny", reason: `This branch pushes to ${target}. Pushing straight to main skips review — use /ship to open a pull request.` };
+      }
+    } catch {
+      /* no upstream: git itself will refuse or ask for one */
+    }
+  }
   if (/\bgit\s+commit\b/.test(command)) {
     try {
       const branch = execSync("git rev-parse --abbrev-ref HEAD", { stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
