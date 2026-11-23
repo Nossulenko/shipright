@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+# ShipRight pre-commit: no commits on main, no secrets, harness stays consistent.
+
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+if [ "$branch" = "main" ] || [ "$branch" = "master" ]; then
+  echo "✗ You are committing on '$branch'. Create a branch first:"
+  echo "    git switch -c feat/001-your-feature"
+  exit 1
+fi
+
+# Never commit real env files.
+env_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '(^|/)\.env(\.[^/]*)?$' | grep -vE '\.(example|sample|template)$')
+if [ -n "$env_files" ]; then
+  echo "✗ These env files hold secrets and must not be committed:"
+  echo "$env_files" | sed 's/^/    /'
+  echo "  Unstage them: git restore --staged <file>"
+  exit 1
+fi
+
+# Scan only the lines being added for common secret shapes.
+secrets=$(git diff --cached -U0 --diff-filter=ACM | grep -E '^\+' | grep -vE '^\+\+\+' | grep -nE \
+  'AKIA[0-9A-Z]{16}|-----BEGIN ([A-Z]+ )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{36,}|xox[abposr]-[A-Za-z0-9-]{10,}|AIza[0-9A-Za-z_-]{35}|sk_live_[0-9a-zA-Z]{24,}|sk-ant-[A-Za-z0-9_-]{20,}|AccountKey=[A-Za-z0-9+/=]{40,}')
+if [ -n "$secrets" ]; then
+  echo "✗ Possible secret in staged changes:"
+  echo "$secrets" | cut -c1-120 | sed 's/^/    /'
+  echo "  Move it to .env (local) or your cloud secret manager, then re-stage."
+  exit 1
+fi
+
+node scripts/verify-harness.mjs --quiet || exit 1

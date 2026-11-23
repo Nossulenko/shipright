@@ -1,0 +1,17 @@
+{
+  "name": "shipright",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Spec-driven harness that helps junior developers ship a product end to end with an AI team.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "verify": "node scripts/verify.mjs",
+    "verify:harness": "node scripts/verify-harness.mjs",
+    "sync:agents": "node scripts/sync-agents.mjs"
+  }
+}

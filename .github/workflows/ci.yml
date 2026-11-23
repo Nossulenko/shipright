@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      # Toolchains switch on automatically once /scaffold adds an app of that kind.
+      - uses: pnpm/action-setup@v6
+        if: hashFiles('pnpm-lock.yaml', 'apps/**/pnpm-lock.yaml') != ''
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - uses: astral-sh/setup-uv@v10
+        if: hashFiles('apps/**/pyproject.toml') != ''
+      - uses: actions/setup-go@v7
+        if: hashFiles('apps/**/go.mod') != ''
+        with:
+          go-version: stable
+      - uses: actions/setup-dotnet@v6
+        if: hashFiles('apps/**/*.csproj') != ''
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install app dependencies
+        shell: bash
+        run: |
+          for app in apps/*/; do
+            [ -d "$app" ] || continue
+            if   [ -f "$app/pnpm-lock.yaml" ] || [ -f pnpm-lock.yaml ]; then (cd "$app" && pnpm install --frozen-lockfile)
+            elif [ -f "$app/package-lock.json" ]; then (cd "$app" && npm ci)
+            elif [ -f "$app/uv.lock" ]; then (cd "$app" && uv sync --frozen)
+            elif [ -f "$app/go.mod" ]; then (cd "$app" && go mod download)
+            fi
+          done
+
+      - name: Install Playwright browsers
+        if: hashFiles('apps/**/playwright.config.ts') != ''
+        shell: bash
+        run: |
+          for cfg in apps/*/playwright.config.ts; do
+            (cd "$(dirname "$cfg")" && npx playwright install --with-deps chromium)
+          done
+
+      - name: npm run verify
+        run: node scripts/verify.mjs
+
+  pr-hygiene:
+    name: pr hygiene
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: No PROGRESS.md in pull requests
+        run: |
+          if [ -f PROGRESS.md ]; then
+            echo "::error file=PROGRESS.md::Fold PROGRESS.md into the spec/docs and delete it before merging (AGENTS.md › Working Notes)."
+            exit 1
+          fi

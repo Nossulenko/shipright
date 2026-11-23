@@ -1,0 +1,70 @@
+# ShipRight — deploy to Azure Container Apps on every push to main.
+#
+# Copy to .github/workflows/deploy-azure.yml. No secrets needed: authentication uses
+# OIDC federated credentials on a user-assigned managed identity. Set these GitHub
+# repository VARIABLES (Settings → Secrets and variables → Actions → Variables), or run
+# the `gh variable set` commands printed by setup-oidc.sh:
+#
+#   AZURE_CLIENT_ID        client ID of the GitHub managed identity
+#   AZURE_TENANT_ID        Microsoft Entra tenant ID
+#   AZURE_SUBSCRIPTION_ID  subscription ID
+#   AZURE_RESOURCE_GROUP   e.g. rg-my-product
+#   AZURE_CONTAINER_APP    e.g. my-product-web
+#   AZURE_ACR_NAME         registry name without .azurecr.io
+#   APP_DIR                e.g. apps/web
+#   HEALTH_PATH            e.g. /health or /api/health
+#
+# The federated credential trusts subject repo:<owner>/<repo>:environment:production,
+# so this job MUST keep `environment: production`.
+
+name: Deploy to Azure Container Apps
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-azure
+  cancel-in-progress: false
+
+# Least privilege: read the code, mint an OIDC token. Nothing else.
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    env:
+      IMAGE: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/${{ vars.AZURE_CONTAINER_APP }}:${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push the image (tagged with the commit SHA)
+        run: |
+          az acr login --name "${{ vars.AZURE_ACR_NAME }}"
+          docker build -t "$IMAGE" "${{ vars.APP_DIR }}"
+          docker push "$IMAGE"
+
+      - name: Deploy to Container Apps
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          containerAppName: ${{ vars.AZURE_CONTAINER_APP }}
+          resourceGroup: ${{ vars.AZURE_RESOURCE_GROUP }}
+          imageToDeploy: ${{ env.IMAGE }}
+
+      - name: Smoke check the health endpoint
+        run: |
+          FQDN=$(az containerapp show -n "${{ vars.AZURE_CONTAINER_APP }}" -g "${{ vars.AZURE_RESOURCE_GROUP }}" \
+            --query properties.configuration.ingress.fqdn -o tsv)
+          curl -fsS --retry 6 --retry-delay 5 --retry-all-errors "https://${FQDN}${{ vars.HEALTH_PATH }}"

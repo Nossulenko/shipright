@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "node \"${COPILOT_PROJECT_DIR:-$(git rev-parse --show-toplevel)}/scripts/hooks/guard.mjs\" copilot",
+        "powershell": "node \"$(git rev-parse --show-toplevel)/scripts/hooks/guard.mjs\" copilot",
+        "timeoutSec": 30
+      }
+    ],
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "node \"${COPILOT_PROJECT_DIR:-$(git rev-parse --show-toplevel)}/scripts/hooks/format.mjs\"",
+        "powershell": "node \"$(git rev-parse --show-toplevel)/scripts/hooks/format.mjs\"",
+        "timeoutSec": 60
+      }
+    ],
+    "agentStop": [
+      {
+        "type": "command",
+        "bash": "node \"${COPILOT_PROJECT_DIR:-$(git rev-parse --show-toplevel)}/scripts/hooks/spec-sync.mjs\" copilot",
+        "powershell": "node \"$(git rev-parse --show-toplevel)/scripts/hooks/spec-sync.mjs\" copilot",
+        "timeoutSec": 15
+      }
+    ]
+  }
+}

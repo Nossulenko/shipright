@@ -1,0 +1,151 @@
+# Stack profile: Python API (FastAPI)
+
+## Overview
+
+A typed REST API in Python with automatic OpenAPI docs.
+
+| Layer | Choice |
+| --- | --- |
+| Tooling | **uv** (installs Python, manages the virtualenv and lockfile) |
+| HTTP | FastAPI + Uvicorn |
+| Validation | Pydantic models (request/response = types), `pydantic-settings` for config |
+| Data | PostgreSQL + SQLModel (SQLAlchemy underneath) + Alembic migrations |
+| Lint / format | Ruff |
+| Unit tests | pytest + FastAPI `TestClient` |
+| Acceptance tests | **pytest-bdd** running the `.feature` files |
+| App folder | `apps/api` |
+
+## When to pick it
+
+- Your team knows Python, or the product leans on data / ML libraries.
+- You want readable code and free interactive API docs at `/docs`.
+- **Pick another profile** if the team only knows TypeScript ([`node-api`](node-api.md)) or C# ([`dotnet-api`](dotnet-api.md)).
+
+## Commands
+
+```bash
+uv init --app apps/api && cd apps/api
+uv add "fastapi[standard]" sqlmodel alembic "psycopg[binary]" pydantic-settings
+uv add --dev pytest pytest-bdd httpx ruff mypy
+uv run alembic init migrations
+```
+
+| Task | Command | Used by |
+| --- | --- | --- |
+| Run (dev, auto-reload) | `uv run fastapi dev app/main.py` | you |
+| Lint | `uv run ruff check .` | verify |
+| Format | `uv run ruff format .` | PostToolUse hook |
+| Type-check (optional) | `uv run mypy app` | you, CI |
+| Tests (unit + BDD) | `uv run pytest` | verify |
+| One scenario | `uv run pytest -k "<words from the scenario name>"` | `/build` |
+| New migration | `uv run alembic revision --autogenerate -m "add polls"` | after model changes |
+| Apply migrations | `uv run alembic upgrade head` | deploy, local |
+
+## Layout
+
+```
+apps/api/
+  app/main.py              FastAPI app + routers + /health
+  app/settings.py          pydantic-settings: reads env vars (DATABASE_URL…)
+  app/routers/             one module per resource
+  app/models.py            SQLModel tables
+  migrations/              Alembic — commit the versions/ folder
+  tests/test_*.py          unit tests
+  tests/steps/             pytest-bdd step modules (test_<feature>.py)
+  pyproject.toml  uv.lock
+  Dockerfile  .dockerignore  .env.example
+```
+
+`app/main.py`:
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI(title="API")
+
+
+@app.get("/health")
+def health() -> dict[str, str]:
+    return {"status": "ok"}
+```
+
+## Testing & BDD runner
+
+Point pytest-bdd at the spec folders in `pyproject.toml`:
+
+```toml
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+bdd_features_base_dir = "../../specs"
+```
+
+`tests/steps/test_health.py`:
+
+```python
+from fastapi.testclient import TestClient
+from pytest_bdd import parsers, scenarios, then, when
+
+from app.main import app
+
+scenarios("001-team-lunch-poll/02-scenarios/health.feature")
+
+client = TestClient(app)
+
+
+@when(parsers.parse('I request "{path}"'), target_fixture="response")
+def request_path(path: str):
+    return client.get(path)
+
+
+@then(parsers.parse("the response status is {status:d}"))
+def response_status(response, status: int):
+    assert response.status_code == status
+```
+
+pytest-bdd turns Gherkin tags into pytest markers, so `uv run pytest -m api` runs API-tagged scenarios. Register the markers you use under `markers = [...]` in the same ini section to avoid warnings.
+
+## Container
+
+`apps/api/Dockerfile`:
+
+```dockerfile
+# syntax=docker/dockerfile:1
+FROM python:3.13-slim AS build
+# Pin the uv image to a specific version for reproducible builds (see the uv docs).
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+WORKDIR /app
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+COPY . .
+RUN uv sync --frozen --no-dev
+
+FROM python:3.13-slim AS runtime
+RUN useradd --create-home --uid 10001 app
+WORKDIR /app
+COPY --from=build --chown=app:app /app /app
+ENV PATH="/app/.venv/bin:$PATH" PORT=8080
+USER app
+EXPOSE 8080
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --proxy-headers"]
+```
+
+`.dockerignore`: `.venv`, `__pycache__`, `.pytest_cache`, `.ruff_cache`, `.git`, `.env*`, `!.env.example`.
+
+Health path for deploys: **`/health`**.
+
+## Cloud fit
+
+| Cloud | Service | Notes |
+| --- | --- | --- |
+| Google Cloud | Cloud Run | `gcloud run deploy --source apps/api` (uses the Dockerfile) |
+| Azure | Container Apps | `az containerapp up --source apps/api` |
+| AWS | ECS Express Mode | `docker build --platform linux/amd64`, push to ECR |
+
+## Junior gotchas
+
+- **Always run through `uv run`** — it uses the project's virtualenv, so "works on my machine" means the same Python and packages everywhere.
+- **`def` vs `async def`.** Use `async def` only when everything inside is async (e.g. `httpx.AsyncClient`). A blocking call (plain `requests`, sync DB driver) inside `async def` freezes the whole server.
+- **Settings come from the environment** via `pydantic-settings`, never hard-coded. Missing required settings should crash at startup, not on the first request.
+- **Review autogenerated Alembic migrations** before committing — autogenerate misses some changes (renames look like drop + add, which loses data).
+- **`--proxy-headers`** makes FastAPI see the real `https` scheme behind the cloud load balancer, so generated URLs are correct.

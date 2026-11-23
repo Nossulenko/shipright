@@ -1,0 +1,75 @@
+# ShipRight — deploy to Amazon ECS Express Mode on every push to main.
+#
+# Copy to .github/workflows/deploy-aws.yml. No secrets needed: authentication uses an IAM
+# role assumed through GitHub OIDC (short-lived credentials). Set these GitHub repository
+# VARIABLES (Settings → Secrets and variables → Actions → Variables), or run the
+# `gh variable set` commands printed by setup-oidc.sh:
+#
+#   AWS_ROLE_ARN      arn:aws:iam::<ACCOUNT_ID>:role/github-deploy-<SERVICE>
+#   AWS_REGION        e.g. eu-west-1
+#   ECR_REPOSITORY    ECR repository name
+#   ECS_SERVICE_ARN   arn:aws:ecs:<REGION>:<ACCOUNT_ID>:service/default/<SERVICE>
+#   ECS_SERVICE_NAME  <SERVICE>
+#   APP_DIR           e.g. apps/web
+#   HEALTH_PATH       e.g. /health or /api/health
+#
+# Requires deploy/aws/primary-container.json committed (image, port, env, secret ARNs).
+# The role trusts sub repo:<owner>/<repo>:environment:production, so keep `environment: production`.
+
+name: Deploy to AWS (ECS Express Mode)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-aws
+  cancel-in-progress: false
+
+# Least privilege: read the code, mint an OIDC token. Nothing else.
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Assume the deploy role (OIDC)
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push the image (tagged with the commit SHA)
+        env:
+          IMAGE: ${{ steps.ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ github.sha }}
+        run: |
+          docker build --platform linux/amd64 -t "$IMAGE" "${{ vars.APP_DIR }}"
+          docker push "$IMAGE"
+          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
+
+      - name: Deploy the new image
+        run: |
+          jq --arg img "$IMAGE" '.image = $img' deploy/aws/primary-container.json > "$RUNNER_TEMP/primary-container.json"
+          aws ecs update-express-gateway-service \
+            --service-arn "${{ vars.ECS_SERVICE_ARN }}" \
+            --primary-container "file://$RUNNER_TEMP/primary-container.json" \
+            --no-cli-pager > /dev/null
+          aws ecs wait services-stable --cluster default --services "${{ vars.ECS_SERVICE_NAME }}"
+
+      - name: Smoke check the health endpoint
+        run: |
+          ENDPOINT=$(aws ecs describe-express-gateway-service --service-arn "${{ vars.ECS_SERVICE_ARN }}" \
+            --query 'service.activeConfigurations[0].ingressPaths[0].endpoint' --output text)
+          case "$ENDPOINT" in http*) URL="$ENDPOINT" ;; *) URL="https://$ENDPOINT" ;; esac
+          curl -fsS --retry 6 --retry-delay 10 --retry-all-errors "${URL%/}${{ vars.HEALTH_PATH }}"

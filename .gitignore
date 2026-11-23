@@ -1,0 +1,36 @@
+# dependencies
+node_modules/
+.pnpm-store/
+.venv/
+__pycache__/
+*.pyc
+bin/
+obj/
+vendor/
+
+# builds
+.next/
+dist/
+build/
+out/
+coverage/
+.turbo/
+playwright-report/
+test-results/
+*.tsbuildinfo
+
+# env & secrets — .env.example is the committed template
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*-key.json
+
+# local tooling
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.claude/settings.local.json
+*.log

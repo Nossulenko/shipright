@@ -1,0 +1,6 @@
+interface:
+  display_name: "Deploy"
+  short_description: "Deploy to the cloud in the Project Profile"
+  default_prompt: "Use $deploy with the arguments and repository context I provide."
+policy:
+  allow_implicit_invocation: false
